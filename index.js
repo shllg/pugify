@@ -15,20 +15,22 @@ var defaultPugOptions = {
     pretty: true,
 };
 
-function getTransformFn(options) {
+function getTransformFn() {
     var key;
-    var opts = {};
-    for (key in defaultPugOptions) {
-        opts[key] = defaultPugOptions[key];
-    }
 
-    options = options || {};
-    for (key in options) {
-        opts[key] = options[key];
-    }
-
-    return function (file) {
+    return function (file, options) {
         if (!/\.(pug|jade)$/.test(file)) return through();
+
+        var opts = {};
+        options = options || {};
+        options = options.pugOptions || {};
+
+        for (key in defaultPugOptions) {
+            opts[key] = defaultPugOptions[key];
+        }
+        for (key in options) {
+            opts[key] = options[key];
+        }
 
         var data = '';
         return through(write, end);
